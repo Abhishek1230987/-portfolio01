@@ -19,7 +19,8 @@ export const ContactSection = () => {
     console.log('Sending form data:', formData);
     
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/submit`, {
+      const apiUrl = import.meta.env.VITE_API_URL || '/api';
+      const response = await fetch(`${apiUrl}/submit`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

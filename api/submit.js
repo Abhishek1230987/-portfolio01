@@ -1,20 +1,27 @@
-const express = require('express');
-const helmet = require('helmet');
-const rateLimit = require('express-rate-limit');
 const axios = require('axios');
-const { body, validationResult } = require('express-validator');
 
-const app = express();
-const PORT = process.env.PORT || 3000;
-
-app.use(express.json());
-app.use(helmet());
-
-const limiter = rateLimit({
-  windowMs: 10 * 60 * 1000, // 10 minutes
-  max: 50 
-});
-app.use(limiter);
+// Helper function to validate input
+function validateInput(body) {
+  const errors = [];
+  
+  if (!body.name || body.name.trim().length === 0) {
+    errors.push({ field: 'name', message: 'Name is required' });
+  }
+  
+  if (!body.email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(body.email)) {
+    errors.push({ field: 'email', message: 'Valid email is required' });
+  }
+  
+  if (!body.subject || body.subject.trim().length === 0) {
+    errors.push({ field: 'subject', message: 'Subject is required' });
+  }
+  
+  if (!body.message || body.message.trim().length === 0) {
+    errors.push({ field: 'message', message: 'Message is required' });
+  }
+  
+  return errors;
+}
 
 function formatMessage(formData) {
   const timestamp = new Date().toLocaleString();
@@ -60,31 +67,82 @@ async function sendToTelegram(formData) {
   });
 }
 
-app.post('/api/submit',
-  body('name').trim().isLength({ min: 1 }),
-  body('email').isEmail(),
-  body('subject').trim().isLength({ min: 1 }),
-  body('message').trim().isLength({ min: 1 }),
-  async (req, res) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
-    }
-    const formData = req.body;
-    try {
-      await sendToDiscord(formData);
-      await sendToTelegram(formData);
-      res.status(200).json({ message: 'Message sent successfully!' });
-    } catch (error) {
-      res.status(500).json({ error: 'Failed to send message.' });
-    }
+async function sendMessageToBothPlatforms(formData) {
+  const results = [];
+  const errors = [];
+  
+  // Try to send to Discord
+  try {
+    await sendToDiscord(formData);
+    results.push({ platform: 'discord', status: 'success' });
+  } catch (error) {
+    errors.push({ platform: 'discord', error: error.message });
   }
-);
+  
+  // Try to send to Telegram
+  try {
+    await sendToTelegram(formData);
+    results.push({ platform: 'telegram', status: 'success' });
+  } catch (error) {
+    errors.push({ platform: 'telegram', error: error.message });
+  }
+  
+  return { results, errors };
+}
 
-module.exports = app;
-
-if (require.main === module) {
-  app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
-  });
+// Vercel serverless function handler
+export default async function handler(req, res) {
+  // Set CORS headers
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  
+  // Handle preflight OPTIONS request
+  if (req.method === 'OPTIONS') {
+    res.status(200).end();
+    return;
+  }
+  
+  // Only allow POST requests
+  if (req.method !== 'POST') {
+    return res.status(405).json({ error: 'Method not allowed' });
+  }
+  
+  // Validate input
+  const validationErrors = validateInput(req.body);
+  if (validationErrors.length > 0) {
+    return res.status(400).json({ errors: validationErrors });
+  }
+  
+  const formData = req.body;
+  
+  try {
+    const result = await sendMessageToBothPlatforms(formData);
+    
+    // Check if at least one platform succeeded
+    if (result.results.length > 0) {
+      const successPlatforms = result.results.map(r => r.platform).join(', ');
+      let responseMessage = `Message sent successfully to: ${successPlatforms}`;
+      
+      if (result.errors.length > 0) {
+        const failedPlatforms = result.errors.map(e => e.platform).join(', ');
+        responseMessage += `. Failed to send to: ${failedPlatforms}`;
+      }
+      
+      res.status(200).json({ 
+        message: responseMessage,
+        results: result.results,
+        errors: result.errors
+      });
+    } else {
+      // All platforms failed
+      res.status(500).json({ 
+        error: 'Failed to send message to any platform',
+        errors: result.errors
+      });
+    }
+  } catch (error) {
+    console.error('Error sending message:', error);
+    res.status(500).json({ error: 'Failed to send message.' });
+  }
 }
