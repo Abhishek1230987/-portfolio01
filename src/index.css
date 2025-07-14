@@ -1,0 +1,325 @@
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=JetBrains+Mono:wght@300;400;500;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Cyberpunk Design System - All colors in HSL */
+
+@layer base {
+  :root {
+    /* Cyberpunk Dark Theme */
+    --background: 230 35% 7%;
+    --foreground: 210 40% 98%;
+    
+    /* Neon Primary Colors */
+    --primary: 195 100% 50%;        /* Electric Blue */
+    --primary-foreground: 230 35% 7%;
+    --primary-glow: 195 100% 60%;
+    
+    /* Cyber Purple */
+    --secondary: 270 100% 50%;
+    --secondary-foreground: 210 40% 98%;
+    --secondary-glow: 270 100% 60%;
+    
+    /* Neon Pink */
+    --accent: 320 100% 50%;
+    --accent-foreground: 230 35% 7%;
+    --accent-glow: 320 100% 60%;
+    
+    /* Matrix Green */
+    --success: 120 100% 50%;
+    --success-foreground: 230 35% 7%;
+    --success-glow: 120 100% 60%;
+    
+    /* Glassmorphic Elements */
+    --card: 230 35% 12%;
+    --card-foreground: 210 40% 98%;
+    --card-border: 195 50% 30%;
+    
+    --popover: 230 35% 10%;
+    --popover-foreground: 210 40% 98%;
+    
+    /* UI Elements */
+    --muted: 230 35% 15%;
+    --muted-foreground: 210 20% 65%;
+    
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 210 40% 98%;
+    
+    --border: 195 30% 25%;
+    --input: 230 35% 15%;
+    --ring: 195 100% 50%;
+    
+    --radius: 0.75rem;
+    
+    /* Custom Cyberpunk Gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(195 100% 50%), hsl(270 100% 50%));
+    --gradient-secondary: linear-gradient(135deg, hsl(270 100% 50%), hsl(320 100% 50%));
+    --gradient-accent: linear-gradient(135deg, hsl(320 100% 50%), hsl(195 100% 50%));
+    --gradient-cyber: linear-gradient(135deg, hsl(195 100% 50%) 0%, hsl(270 100% 50%) 50%, hsl(320 100% 50%) 100%);
+    --gradient-matrix: linear-gradient(180deg, hsl(230 35% 7%) 0%, hsl(120 100% 10%) 100%);
+    
+    /* Glow Effects */
+    --glow-primary: 0 0 20px hsl(195 100% 50% / 0.5);
+    --glow-secondary: 0 0 20px hsl(270 100% 50% / 0.5);
+    --glow-accent: 0 0 20px hsl(320 100% 50% / 0.5);
+    --glow-success: 0 0 20px hsl(120 100% 50% / 0.5);
+    
+    /* Glass Effect */
+    --glass-bg: hsl(230 35% 12% / 0.1);
+    --glass-border: hsl(195 50% 50% / 0.2);
+    --glass-backdrop: blur(20px);
+    
+    /* Animation Timings */
+    --transition-fast: 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-normal: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-slow: 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    
+    /* Typography */
+    --font-cyber: 'Orbitron', monospace;
+    --font-code: 'JetBrains Mono', monospace;
+
+    --sidebar-background: 0 0% 98%;
+
+    --sidebar-foreground: 240 5.3% 26.1%;
+
+    --sidebar-primary: 240 5.9% 10%;
+
+    --sidebar-primary-foreground: 0 0% 98%;
+
+    --sidebar-accent: 240 4.8% 95.9%;
+
+    --sidebar-accent-foreground: 240 5.9% 10%;
+
+    --sidebar-border: 220 13% 91%;
+
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+
+  .dark {
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+
+    --primary: 210 40% 98%;
+    --primary-foreground: 222.2 47.4% 11.2%;
+
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 212.7 26.8% 83.9%;
+    --sidebar-background: 240 5.9% 10%;
+    --sidebar-foreground: 240 4.8% 95.9%;
+    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 240 3.7% 15.9%;
+    --sidebar-accent-foreground: 240 4.8% 95.9%;
+    --sidebar-border: 240 3.7% 15.9%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-code;
+    background: var(--gradient-matrix);
+    overflow-x: hidden;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-cyber;
+  }
+}
+
+@layer components {
+  /* Cyberpunk Glass Card */
+  .cyber-card {
+    @apply relative backdrop-blur-xl border border-border/20 rounded-xl overflow-hidden;
+    background: var(--glass-bg);
+    box-shadow: var(--glow-primary);
+  }
+  
+  .cyber-card::before {
+    content: '';
+    @apply absolute inset-0 opacity-0 transition-opacity duration-300;
+    background: var(--gradient-primary);
+    mask: linear-gradient(white, transparent);
+  }
+  
+  .cyber-card:hover::before {
+    @apply opacity-10;
+  }
+  
+  /* Neon Button Variants */
+  .btn-cyber {
+    @apply relative px-6 py-3 font-cyber font-bold text-sm uppercase tracking-wider;
+    @apply bg-transparent border-2 border-primary rounded-lg overflow-hidden;
+    @apply transition-all duration-300 ease-out;
+    color: hsl(var(--primary));
+    text-shadow: 0 0 10px hsl(var(--primary) / 0.5);
+    box-shadow: var(--glow-primary);
+  }
+  
+  .btn-cyber::before {
+    content: '';
+    @apply absolute inset-0 translate-x-[-100%] transition-transform duration-500;
+    background: var(--gradient-primary);
+  }
+  
+  .btn-cyber:hover::before {
+    @apply translate-x-0;
+  }
+  
+  .btn-cyber:hover {
+    color: hsl(var(--primary-foreground));
+    text-shadow: none;
+    box-shadow: var(--glow-primary), 0 0 30px hsl(var(--primary) / 0.8);
+  }
+  
+  /* Glitch Text Effect */
+  .glitch {
+    @apply relative inline-block;
+  }
+  
+  .glitch::before,
+  .glitch::after {
+    content: attr(data-text);
+    @apply absolute top-0 left-0 w-full h-full;
+  }
+  
+  .glitch::before {
+    @apply animate-pulse;
+    color: hsl(var(--accent));
+    z-index: -1;
+    transform: translate(-2px, -2px);
+  }
+  
+  .glitch::after {
+    @apply animate-bounce;
+    color: hsl(var(--secondary));
+    z-index: -2;
+    transform: translate(2px, 2px);
+  }
+  
+  /* Scanning Line Effect */
+  .scan-lines {
+    @apply relative;
+  }
+  
+  .scan-lines::before {
+    content: '';
+    @apply absolute inset-0 pointer-events-none;
+    background: repeating-linear-gradient(
+      90deg,
+      transparent,
+      transparent 2px,
+      hsl(var(--primary) / 0.03) 2px,
+      hsl(var(--primary) / 0.03) 4px
+    );
+  }
+  
+  /* Floating Particles Background */
+  .particles {
+    @apply absolute inset-0 overflow-hidden pointer-events-none;
+  }
+  
+  .particle {
+    @apply absolute w-1 h-1 bg-primary rounded-full opacity-20;
+    animation: float 6s infinite linear;
+  }
+  
+  .particle:nth-child(2n) {
+    @apply bg-secondary;
+    animation-duration: 8s;
+  }
+  
+  .particle:nth-child(3n) {
+    @apply bg-accent;
+    animation-duration: 10s;
+  }
+  
+  /* Terminal Cursor */
+  .terminal-cursor {
+    @apply inline-block w-2 h-5 bg-primary ml-1;
+    animation: blink 1s infinite;
+  }
+  
+  /* Progress Bar */
+  .progress-cyber {
+    @apply relative h-2 bg-muted rounded-full overflow-hidden;
+  }
+  
+  .progress-cyber::before {
+    content: '';
+    @apply absolute inset-y-0 left-0 rounded-full;
+    background: var(--gradient-primary);
+    box-shadow: var(--glow-primary);
+    transition: width 1s ease-out;
+  }
+}
+
+@layer utilities {
+  /* Animation Keyframes */
+  @keyframes float {
+    0% { transform: translateY(100vh) rotate(0deg); }
+    100% { transform: translateY(-100vh) rotate(360deg); }
+  }
+  
+  @keyframes blink {
+    0%, 50% { opacity: 1; }
+    51%, 100% { opacity: 0; }
+  }
+  
+  @keyframes glow-pulse {
+    0%, 100% { box-shadow: var(--glow-primary); }
+    50% { box-shadow: var(--glow-primary), 0 0 40px hsl(var(--primary) / 0.8); }
+  }
+  
+  @keyframes scan {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100vw); }
+  }
+  
+  /* Utility Classes */
+  .text-glow {
+    text-shadow: 0 0 10px currentColor;
+  }
+  
+  .bg-glass {
+    background: var(--glass-bg);
+    backdrop-filter: var(--glass-backdrop);
+  }
+  
+  .border-glow {
+    box-shadow: 0 0 20px hsl(var(--border) / 0.5);
+  }
+  
+  .animate-glow-pulse {
+    animation: glow-pulse 2s ease-in-out infinite;
+  }
+  
+  .animate-scan {
+    animation: scan 3s linear infinite;
+  }
+}

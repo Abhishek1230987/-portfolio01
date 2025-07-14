@@ -1,0 +1,23 @@
+services:
+  - type: web
+    name: cyber-dev-console-backend
+    env: node
+    region: oregon
+    plan: free
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      - key: DISCORD_WEBHOOK_URL
+        sync: false
+      - key: TELEGRAM_BOT_TOKEN
+        sync: false
+      - key: TELEGRAM_CHAT_ID
+        sync: false
+    healthCheckPath: /
+    numInstances: 1
+    rootDir: ./backend
+    autoDeploy: false
