@@ -10,7 +10,29 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 // Middleware
-app.use(cors());
+const allowedOrigins = [
+  'http://localhost:3000',
+  'http://localhost:8080',
+  'http://localhost:8081',
+  'https://your-vercel-deployment-url.vercel.app', // Replace with your actual Vercel URL
+  process.env.FRONTEND_URL // Add this environment variable on Render
+].filter(Boolean);
+
+app.use(cors({
+  origin: function (origin, callback) {
+    // Allow requests with no origin (like mobile apps or curl requests)
+    if (!origin) return callback(null, true);
+    
+    if (allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    }
+    
+    const msg = 'The CORS policy for this site does not allow access from the specified Origin.';
+    return callback(new Error(msg), false);
+  },
+  credentials: true,
+  optionsSuccessStatus: 200
+}));
 app.use(helmet());
 app.use(express.json());
 
@@ -58,22 +80,34 @@ function formatMessage(formData) {
 async function sendToDiscord(formData) {
   const discordWebhookUrl = process.env.DISCORD_WEBHOOK_URL;
   
+  console.log('Discord webhook URL configured:', !!discordWebhookUrl);
+  
   if (!discordWebhookUrl) {
     throw new Error('Discord webhook URL not configured');
   }
 
   const message = formatMessage(formData);
   
+  console.log('Sending Discord message:', JSON.stringify(message.discord, null, 2));
+  
   try {
     const response = await axios.post(discordWebhookUrl, message.discord, {
       headers: {
         'Content-Type': 'application/json'
-      }
+      },
+      timeout: 30000 // 30 second timeout
     });
+    console.log('Discord response status:', response.status);
     return response.data;
   } catch (error) {
-    console.error('Discord Error:', error.response?.data || error.message);
-    throw new Error('Failed to send message to Discord');
+    console.error('Discord Error Details:');
+    console.error('- Status:', error.response?.status);
+    console.error('- Status Text:', error.response?.statusText);
+    console.error('- Response Data:', error.response?.data);
+    console.error('- Error Message:', error.message);
+    console.error('- Full Error:', error);
+    
+    throw new Error(`Failed to send message to Discord: ${error.response?.status || error.message}`);
   }
 }
 
