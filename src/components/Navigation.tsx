@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Menu, X, Terminal } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { CyberLogo } from '@/components/CyberLogo';
 
 export const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -28,7 +29,7 @@ export const Navigation = () => {
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <div className="flex items-center space-x-2 text-primary font-cyber font-bold text-xl">
-            <Terminal className="w-6 h-6" />
+            <CyberLogo size="sm" className="text-primary" />
             <span className="glitch" data-text="DEV.MATRIX">
               DEV.MATRIX
             </span>
