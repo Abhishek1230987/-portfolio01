@@ -11,6 +11,8 @@ services:
         value: production
       - key: PORT
         value: 10000
+      - key: FRONTEND_URL
+        value: https://cyber-dev-console-frontend.vercel.app
       - key: DISCORD_WEBHOOK_URL
         sync: false
       - key: TELEGRAM_BOT_TOKEN

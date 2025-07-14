@@ -14,8 +14,9 @@ const allowedOrigins = [
   'http://localhost:3000',
   'http://localhost:8080',
   'http://localhost:8081',
-  'https://your-vercel-deployment-url.vercel.app', // Replace with your actual Vercel URL
-  process.env.FRONTEND_URL // Add this environment variable on Render
+  'https://cyber-dev-console-frontend.vercel.app',
+  'https://your-vercel-deployment-url.vercel.app',
+  process.env.FRONTEND_URL
 ].filter(Boolean);
 
 app.use(cors({

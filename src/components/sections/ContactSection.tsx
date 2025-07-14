@@ -7,16 +7,15 @@ export const ContactSection = () => {
   const [email, setEmail] = useState('');
   const [subject, setSubject] = useState('');
   const [message, setMessage] = useState('');
-  const [platform, setPlatform] = useState('telegram');
   const [isLoading, setIsLoading] = useState(false);
   const [status, setStatus] = useState('');
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-    setStatus('Sending...');
+    setStatus('Sending to both Discord and Telegram...');
     
-    const formData = { name, email, subject, message, platform };
+    const formData = { name, email, subject, message };
     console.log('Sending form data:', formData);
     
     try {
@@ -29,7 +28,8 @@ export const ContactSection = () => {
       });
       
       if (response.ok) {
-        setStatus('✅ Message sent successfully!');
+        const result = await response.json();
+        setStatus('✅ ' + result.message);
         setName('');
         setEmail('');
         setSubject('');
@@ -188,19 +188,13 @@ export const ContactSection = () => {
                   </div>
                 </div>
 
-                <div>
-                  <label className="block text-sm font-code text-muted-foreground mb-2">
-                    Transmission Channel
-                  </label>
-                  <select
-                    name="platform"
-                    value={platform}
-                    onChange={(e) => setPlatform(e.target.value)}
-                    className="w-full px-4 py-3 bg-gray-800 text-white border border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 text-sm"
-                  >
-                    <option value="discord">Discord Channel</option>
-                    <option value="telegram">Telegram Network</option>
-                  </select>
+                <div className="p-4 bg-gradient-to-r from-blue-500/10 to-purple-500/10 rounded-lg border border-blue-500/30">
+                  <p className="text-sm font-code text-blue-200 mb-2">
+                    <strong>📱 Dual Platform Messaging:</strong>
+                  </p>
+                  <p className="text-xs font-code text-muted-foreground">
+                    Your message will be automatically sent to both Discord and Telegram for faster response times.
+                  </p>
                 </div>
 
                 <div>
@@ -243,21 +237,32 @@ export const ContactSection = () => {
                     {isLoading ? (
                       <>
                         <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin"></div>
-                        <span>Transmitting...</span>
+                        <span>Transmitting to Both Platforms...</span>
                       </>
                     ) : (
                       <>
                         <Send className="w-4 h-4" />
-                        <span>Send Message</span>
+                        <span>Send to Discord & Telegram</span>
                       </>
                     )}
                   </span>
                 </Button>
               </form>
 
+              {/* Status Display */}
+              {status && (
+                <div className={`mt-4 p-4 rounded-lg border ${
+                  status.includes('✅') 
+                    ? 'bg-green-500/10 border-green-500/30 text-green-400' 
+                    : 'bg-red-500/10 border-red-500/30 text-red-400'
+                }`}>
+                  <p className="text-sm font-code">{status}</p>
+                </div>
+              )}
+
               <div className="mt-6 p-4 bg-muted/20 rounded-lg border border-border/20">
                 <p className="text-xs font-code text-muted-foreground leading-relaxed">
-                  <strong>Note:</strong> This form will send your message directly to my {platform} account.
+                  <strong>Note:</strong> This form will send your message directly to both Discord and Telegram accounts.
                   Please ensure your contact information is correct so I can respond promptly. 
                   All communications are encrypted and confidential.
                 </p>
